@@ -1,0 +1,11 @@
+{
+    "name": "level-level/404",
+    "version": "0.1.0",
+    "type": "wordpress-muplugin",
+    "authors": [
+        {
+            "name": "Level Level",
+            "homepage": "https://level-level.com"
+        }
+    ]
+}
