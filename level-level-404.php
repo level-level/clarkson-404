@@ -26,7 +26,7 @@ class FourOFour {
         add_action( 'wp', array( $this, 'force_404' ) );
     }
 
-    public function add_404_object($objects){
+    public function add_404_object( $objects ){
 
         if( !is_404() )
             return $objects;
