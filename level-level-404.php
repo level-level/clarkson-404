@@ -34,7 +34,7 @@ class FourOFour {
         $id = get_option( 'll-page-for-404', false );
 
         if ( ! $id ) {
-            return;
+            return $objects;
         }
 
         $id = get_post( $id );
