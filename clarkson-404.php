@@ -28,8 +28,9 @@ class FourOFour {
 
     public function add_404_object( $objects ){
 
-        if( !is_404() )
+        if( !is_404() ) {
             return $objects;
+        }
 
         $id = get_option( 'clarkson-page-for-404', false );
 
