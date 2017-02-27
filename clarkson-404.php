@@ -2,13 +2,13 @@
 /*
  * Plugin Name: Custom 404 page
  * Version: 0.1.0
- * Description: A plugin to set a custom page as 404 - Clarkson compatible
+ * Description: A plugin to set a custom page as 404 for Clarkson
  * Author: Level Level
  * Author URI: http://www.level-level.com
  * Requires at least: 4.0
  * Tested up to: 4.0
  *
- * Text Domain: ll-404
+ * Text Domain: clarkson-404
  * Domain Path: /lang/
  *
  * @package WordPress
@@ -16,7 +16,7 @@
  * @since 0.1.0
  */
 
-namespace LevelLevel;
+namespace Clarkson;
 
 class FourOFour {
 
@@ -31,7 +31,7 @@ class FourOFour {
         if( !is_404() )
             return $objects;
 
-        $id = get_option( 'll-page-for-404', false );
+        $id = get_option( 'clarkson-page-for-404', false );
 
         if ( ! $id ) {
             return $objects;
@@ -49,7 +49,7 @@ class FourOFour {
     }
 
     public function force_404() {
-        $id = get_option( 'll-page-for-404', false );
+        $id = get_option( 'clarkson-page-for-404', false );
 
         if ( ! $id ) {
             return;
@@ -69,20 +69,20 @@ class FourOFour {
      */
     public function settings_field() {
 
-        register_setting( 'reading', 'll-page-for-404' );
+        register_setting( 'reading', 'clarkson-page-for-404' );
 
-        add_settings_field( 'll-page-for-404', __('404 Page', 'll-404'), array( $this, 'options_reading_404' ), 'reading', 'default', array( 'label_for' => 'll-page-for-404' ) );
+        add_settings_field( 'clarkson-page-for-404', __('404 Page', 'clarkson-404'), array( $this, 'options_reading_404' ), 'reading', 'default', array( 'label_for' => 'clarkson-page-for-404' ) );
 
         add_filter( 'display_post_states', array( $this, 'field_content' ), 10, 2 );
     }
 
     public function options_reading_404() {
-        echo "<label for='ll-page-for-404'>";
-        printf( __( 'Page: %s' ), wp_dropdown_pages( array( 'name' => 'll-page-for-404',
+        echo "<label for='clarkson-page-for-404'>";
+        printf( __( 'Page: %s' ), wp_dropdown_pages( array( 'name' => 'clarkson-page-for-404',
             'echo'              => 0,
-            'show_option_none'  => __( '&mdash; Select &mdash;', 'll-404' ),
+            'show_option_none'  => __( '&mdash; Select &mdash;', 'clarkson-404' ),
             'option_none_value' => '0',
-            'selected'          => get_option( 'll-page-for-404', false )
+            'selected'          => get_option( 'clarkson-page-for-404', false )
         ) ) );
         echo  '</label>';
     }
@@ -96,14 +96,14 @@ class FourOFour {
      */
     public function field_content( $post_states, $post ){
 
-        $id = get_option('ll-page-for-404', false);
+        $id = get_option('clarkson-page-for-404', false);
 
         if( !$id ) {
             return $post_states;
         }
 
         if( $post->ID === intval( $id ) ){
-            $post_states['ll-page-for-404'] = __( '404', 'll-404' );
+            $post_states['clarkson-page-for-404'] = __( '404', 'clarkson-404' );
         }
 
         return $post_states;
