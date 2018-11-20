@@ -39,6 +39,8 @@ class FourOFour {
         }
 
         $id = get_post( $id );
+        global $post;
+        $post = $id;
 
         $object_loader = \Clarkson_Core_Objects::get_instance();
 
