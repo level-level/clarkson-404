@@ -1,6 +1,6 @@
 # Custom 404 page for Clarkson
  
-A plugin to set a custom page as 404 when using [Clarkson Core](http://wp-clarkson.com/core){:target="_blank"}
+A plugin to set a custom page as 404 when using [Clarkson Core](http://wp-clarkson.com/core).
 
 ## How to
 
