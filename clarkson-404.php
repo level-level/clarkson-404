@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Custom 404 page
- * Version: 0.1.1
+ * Version: 1.0.0
  * Description: A plugin to set a custom page as 404 for Clarkson
  * Author: Level Level
  * Author URI: http://www.level-level.com
@@ -17,6 +17,8 @@
  */
 
 namespace Clarkson;
+
+use Clarkson_Core\Objects;
 
 class FourOFour {
 
@@ -42,7 +44,7 @@ class FourOFour {
         global $post;
         $post = $id;
 
-        $object_loader = \Clarkson_Core_Objects::get_instance();
+        $object_loader = Objects::get_instance();
 
         $page = $object_loader->get_object( $id );
 
