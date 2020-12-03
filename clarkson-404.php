@@ -24,7 +24,7 @@ class FourOFour {
 
     protected function __construct() {
         add_action( 'admin_init', array( $this, 'settings_field' ) );
-        add_filter( 'clarkson_core_template_context', array( $this, 'add_404_object' ) );
+        add_filter( 'clarkson_core_template_context', array( $this, 'add_404_object' ), 11 );
         add_action( 'wp', array( $this, 'force_404' ) );
     }
 
