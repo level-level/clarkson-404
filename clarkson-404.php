@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Custom 404 page
- * Version: 1.0.1
+ * Version: 1.0.2
  * Description: A plugin to set a custom page as 404 for Clarkson
  * Author: Level Level
  * Author URI: http://www.level-level.com
