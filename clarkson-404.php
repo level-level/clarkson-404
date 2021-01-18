@@ -19,112 +19,135 @@
 namespace Clarkson;
 
 use Clarkson_Core\Objects;
+use WP_Post;
 
 class FourOFour {
 
-    protected function __construct() {
-        add_action( 'admin_init', array( $this, 'settings_field' ) );
-        add_filter( 'clarkson_core_template_context', array( $this, 'add_404_object' ), 11 );
-        add_action( 'wp', array( $this, 'force_404' ) );
-    }
+	protected function __construct() {
+		add_action( 'admin_init', array( $this, 'settings_field' ) );
+		add_filter( 'clarkson_core_template_context', array( $this, 'add_404_object' ), 11 );
+		add_action( 'the_posts', array( $this, 'set_404' ), 10, 2 );
+		add_action( 'wp', array( $this, 'force_404' ) );
+	}
 
-    public function add_404_object( $objects ){
+	public function set_404( $posts, $query ) {
+		if ( ! is_404() || ! $query->is_main_query() ) {
+			return $posts;
+		}
+		$id = get_option( 'clarkson-page-for-404', false );
 
-        if( !is_404() ) {
-            return $objects;
-        }
+		if ( ! $id ) {
+			return $posts;
+		}
 
-        $id = get_option( 'clarkson-page-for-404', false );
+		$post_404 = get_post( $id );
+		if ( ! $post_404 instanceof WP_Post ) {
+			return $posts;
+		}
+		return array( $post_404 );
+	}
 
-        if ( ! $id ) {
-            return $objects;
-        }
+	public function add_404_object( $objects ) {
+		if ( ! is_404() ) {
+			return $objects;
+		}
 
-        $id = get_post( $id );
-        global $post;
-        $post = $id;
+		$id = get_option( 'clarkson-page-for-404', false );
 
-        $object_loader = Objects::get_instance();
+		if ( ! $id ) {
+			return $objects;
+		}
 
-        $page = $object_loader->get_object( $id );
+		$id = get_post( $id );
+		global $post;
+		$post = $id;
 
-        $objects['objects'] = array( $page );
+		$object_loader = Objects::get_instance();
 
-        return $objects;
-    }
+		$page = $object_loader->get_object( $id );
 
-    public function force_404() {
-        $id = get_option( 'clarkson-page-for-404', false );
+		$objects['objects'] = array( $page );
 
-        if ( ! $id ) {
-            return;
-        }
+		return $objects;
+	}
 
-        if ( is_page( $id ) ) {
-            header( "Status: 404 Not Found" );
-            global $wp_query;
-            $wp_query->set_404();
-            status_header( 404 );
-            nocache_headers();
-        }
-    }
+	public function force_404() {
+		$id = get_option( 'clarkson-page-for-404', false );
 
-    /**
-     * Create setting field page_for_404
-     */
-    public function settings_field() {
+		if ( ! $id ) {
+			return;
+		}
 
-        register_setting( 'reading', 'clarkson-page-for-404' );
+		if ( is_page( $id ) ) {
+			header( 'Status: 404 Not Found' );
+			global $wp_query;
+			$wp_query->set_404();
+			status_header( 404 );
+			nocache_headers();
+		}
+	}
 
-        add_settings_field( 'clarkson-page-for-404', __('404 Page', 'clarkson-404'), array( $this, 'options_reading_404' ), 'reading', 'default', array( 'label_for' => 'clarkson-page-for-404' ) );
+	/**
+	 * Create setting field page_for_404
+	 */
+	public function settings_field() {
 
-        add_filter( 'display_post_states', array( $this, 'field_content' ), 10, 2 );
-    }
+		register_setting( 'reading', 'clarkson-page-for-404' );
 
-    public function options_reading_404() {
-        echo "<label for='clarkson-page-for-404'>";
-        printf( __( 'Page: %s' ), wp_dropdown_pages( array( 'name' => 'clarkson-page-for-404',
-            'echo'              => 0,
-            'show_option_none'  => __( '&mdash; Select &mdash;', 'clarkson-404' ),
-            'option_none_value' => '0',
-            'selected'          => get_option( 'clarkson-page-for-404', false )
-        ) ) );
-        echo  '</label>';
-    }
+		add_settings_field( 'clarkson-page-for-404', __( '404 Page', 'clarkson-404' ), array( $this, 'options_reading_404' ), 'reading', 'default', array( 'label_for' => 'clarkson-page-for-404' ) );
 
-    /**
-     * Add post state '404' in pages overview
-     * @param $post_states
-     * @param $post
-     *
-     * @return mixed
-     */
-    public function field_content( $post_states, $post ){
+		add_filter( 'display_post_states', array( $this, 'field_content' ), 10, 2 );
+	}
 
-        $id = get_option('clarkson-page-for-404', false);
+	public function options_reading_404() {
+		echo "<label for='clarkson-page-for-404'>";
+		printf(
+			__( 'Page: %s' ), wp_dropdown_pages(
+				array(
+					'name'              => 'clarkson-page-for-404',
+					'echo'              => 0,
+					'show_option_none'  => __( '&mdash; Select &mdash;', 'clarkson-404' ),
+					'option_none_value' => '0',
+					'selected'          => get_option( 'clarkson-page-for-404', false ),
+				)
+			)
+		);
+		echo '</label>';
+	}
 
-        if( !$id ) {
-            return $post_states;
-        }
+	/**
+	 * Add post state '404' in pages overview
+	 * @param $post_states
+	 * @param $post
+	 *
+	 * @return mixed
+	 */
+	public function field_content( $post_states, $post ) {
 
-        if( $post->ID === intval( $id ) ){
-            $post_states['clarkson-page-for-404'] = __( '404', 'clarkson-404' );
-        }
+		$id = get_option( 'clarkson-page-for-404', false );
 
-        return $post_states;
-    }
+		if ( ! $id ) {
+			return $post_states;
+		}
 
-    protected $instance = null;
+		if ( $post->ID === intval( $id ) ) {
+			$post_states['clarkson-page-for-404'] = __( '404', 'clarkson-404' );
+		}
 
-    public static function get_instance() {
-        static $instance = null;
+		return $post_states;
+	}
 
-        if ( null === $instance ) {
-            $instance = new FourOFour();
-        }
+	protected $instance = null;
 
-        return $instance;
-    }
+	public static function get_instance() {
+		static $instance = null;
+
+		if ( null === $instance ) {
+			$instance = new FourOFour();
+		}
+
+		return $instance;
+	}
 }
 
 FourOFour::get_instance();
