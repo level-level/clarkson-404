@@ -20,6 +20,7 @@ namespace Clarkson;
 
 use Clarkson_Core\Objects;
 use WP_Post;
+use WP_Query;
 
 class FourOFour {
 
@@ -28,6 +29,7 @@ class FourOFour {
 		add_filter( 'clarkson_core_template_context', array( $this, 'add_404_object' ), 11 );
 		add_action( 'the_posts', array( $this, 'set_404' ), 10, 2 );
 		add_action( 'wp', array( $this, 'force_404' ) );
+		add_action( 'pre_get_posts', array( $this, 'exclude_404_from_search' ) );
 	}
 
 	public function set_404( $posts, $query ) {
@@ -135,6 +137,26 @@ class FourOFour {
 		}
 
 		return $post_states;
+	}
+
+	/**
+	 * Exclude selected 404 page from search results
+	 */
+	public function exclude_404_from_search( WP_Query $query ): void {
+		$excluded = apply_filters( 'clarkson_404_exclude_from_search', true );
+
+		if ( ! is_admin() && is_search() && $query->is_main_query() && $excluded ) {
+			$id = get_option( 'clarkson-page-for-404', false );
+
+			if ( empty( $id ) ) {
+				return;
+			}
+
+			$excluded_posts = $query->get( 'post__not_in' ) ?: array();
+			array_push( $excluded_posts, $id );
+
+			$query->set( 'post__not_in', $excluded_posts );
+		}
 	}
 
 	protected $instance = null;
