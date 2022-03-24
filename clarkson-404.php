@@ -104,7 +104,9 @@ class FourOFour {
 	public function options_reading_404() {
 		echo "<label for='clarkson-page-for-404'>";
 		printf(
-			__( 'Page: %s' ), wp_dropdown_pages(
+			/* translators: Page number */
+			__( 'Page: %s' ),
+			wp_dropdown_pages(
 				array(
 					'name'              => 'clarkson-page-for-404',
 					'echo'              => 0,
@@ -132,7 +134,7 @@ class FourOFour {
 			return $post_states;
 		}
 
-		if ( $post->ID === intval( $id ) ) {
+		if ( intval( $id ) === $post->ID ) {
 			$post_states['clarkson-page-for-404'] = __( '404', 'clarkson-404' );
 		}
 
@@ -152,7 +154,7 @@ class FourOFour {
 				return;
 			}
 
-			$excluded_posts = $query->get( 'post__not_in' ) ?: array();
+			$excluded_posts = $query->get( 'post__not_in' ) ? $query->get( 'post__not_in' ) : array();
 			array_push( $excluded_posts, $id );
 
 			$query->set( 'post__not_in', $excluded_posts );

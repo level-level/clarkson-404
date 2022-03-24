@@ -1,12 +1,30 @@
 {
     "name": "level-level/clarkson-404",
     "type": "wordpress-muplugin",
+    "license": "MIT",
+    "description": "A plugin to set a custom page as 404 for using with Clarkson.",
     "authors": [
         {
             "name": "Level Level",
             "homepage": "https://level-level.com"
         }
     ],
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^2.3",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
+    },
+    "scripts": {
+		"fix" : [
+			"phpcbf"
+		],
+		"test": [
+			"composer validate",
+			"phpcs"
+		],
+		"phpunit":[
+			"phpunit"
+		]
+	},
     "require": {
         "level-level/clarkson-core": "^1 | ^2"
     }
