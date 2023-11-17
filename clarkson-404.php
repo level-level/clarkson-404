@@ -66,7 +66,11 @@ class FourOFour {
 
 		$object_loader = Objects::get_instance();
 
-		$page = $object_loader->get_object( $id );
+		try {
+			$page = $object_loader->get_object( $id );
+		} catch ( \Exception $e ) {
+			return $objects;
+		}
 
 		$objects['objects'] = array( $page );
 
