@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Custom 404 page
- * Version: 1.0.2
+ * Version: 1.0.3
  * Description: A plugin to set a custom page as 404 for Clarkson
  * Author: Level Level
  * Author URI: http://www.level-level.com
@@ -55,19 +55,22 @@ class FourOFour {
 		}
 
 		$id = get_option( 'clarkson-page-for-404', false );
-
 		if ( ! $id ) {
 			return $objects;
 		}
 
-		$id = get_post( $id );
+		$page_not_found_post = get_post( $id );
+		if ( ! $page_not_found_post instanceof WP_Post ) {
+			return $objects;
+		}
+		
 		global $post;
-		$post = $id;
+		$post = $page_not_found_post;
 
 		$object_loader = Objects::get_instance();
 
 		try {
-			$page = $object_loader->get_object( $id );
+			$page = $object_loader->get_object( $page_not_found_post );
 		} catch ( \Exception $e ) {
 			return $objects;
 		}
