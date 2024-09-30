@@ -55,19 +55,22 @@ class FourOFour {
 		}
 
 		$id = get_option( 'clarkson-page-for-404', false );
-
 		if ( ! $id ) {
 			return $objects;
 		}
 
-		$id = get_post( $id );
+		$page_not_found_post = get_post( $id );
+		if ( ! $page_not_found_post instanceof WP_Post ) {
+			return $objects;
+		}
+		
 		global $post;
-		$post = $id;
+		$post = $page_not_found_post;
 
 		$object_loader = Objects::get_instance();
 
 		try {
-			$page = $object_loader->get_object( $id );
+			$page = $object_loader->get_object( $page_not_found_post );
 		} catch ( \Exception $e ) {
 			return $objects;
 		}
